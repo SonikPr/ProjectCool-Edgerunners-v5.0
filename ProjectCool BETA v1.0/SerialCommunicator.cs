@@ -58,6 +58,11 @@ namespace ProjectCool_BETA_v1._0
             }
         }
 
+        public bool PortOpen()
+        {
+            return MainPort.IsOpen;
+        }
+
         public void SendData(string data)
         {
             if (MainPort.IsOpen)

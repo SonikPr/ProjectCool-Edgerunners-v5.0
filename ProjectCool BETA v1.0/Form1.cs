@@ -124,13 +124,19 @@ namespace ProjectCool_BETA_v1._0
             }
             if (MenuEnabled != 1)
             {
-                CommitChanges();
-                DevicePooling.Stop();
+                if (DeviceSerial.PortOpen())
+                {
+                    CommitChanges();
+                    DevicePooling.Stop();
+                }
             }
             else
                     if (MenuEnabled == 1)
             {
-                DevicePooling.Start();
+                if (DeviceSerial.PortOpen())
+                {
+                    DevicePooling.Start();
+                }
             }
         }
 
@@ -186,6 +192,7 @@ namespace ProjectCool_BETA_v1._0
                     if (DeviceSerial.ReceiveData().Contains("PC1.0"))
                     {
                         UpdateSettings();
+                        DevicePooling.Start();
                         break;
                     }
                     if(errors_count++ > 10)
