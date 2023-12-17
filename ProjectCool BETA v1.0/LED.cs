@@ -17,6 +17,9 @@ namespace ProjectCool_BETA_v1._0
         private int BREATHE_SPEED;
         private int COLOR_CHANGE_SPEED;
         private byte MODE;
+        private byte FANLEDMODE;
+        private byte VARIABLE_BRIGHTNESS_MODE;
+        private byte VARIABLE_BRIGHTNESS_PARAMETER;
 
 
         public void CreateLed() { }
@@ -66,8 +69,25 @@ namespace ProjectCool_BETA_v1._0
 		{
 			get { return MODE; }
 			set { MODE = value; }
-		}
+        }
 
+        public byte FanLedMode
+        {
+            get { return FANLEDMODE; }
+            set { FANLEDMODE = value; }
+        }
+
+        public byte VarBrMode
+        {
+            get { return VARIABLE_BRIGHTNESS_MODE; }
+            set { VARIABLE_BRIGHTNESS_MODE = value; }
+        }
+
+        public byte VarBrParam
+        {
+            get { return VARIABLE_BRIGHTNESS_PARAMETER; }
+            set { VARIABLE_BRIGHTNESS_PARAMETER = value; }
+        }
         /*
         private int constrain(int x, int min, int max)
         {

@@ -12,7 +12,7 @@ using System.Threading;
 namespace ProjectCool_BETA_v1._0
 {
     //Cyberpunk Edgerunners
-    //Like me and Dasha
+    //Like me and Dashka <3
     //This design and layout is an easter egg, is you know - you know
     public partial class ProjectCool : Form
     {
@@ -23,10 +23,10 @@ namespace ProjectCool_BETA_v1._0
         SerialCommunicator DeviceSerial = new SerialCommunicator();
         LED sysleds = new LED();
         Fan sysfans = new Fan();
-        int[] DeviceData = new int[13];
-        int[] DeviceData2 = new int[13];
-        string[] DeviceDataString = new string[13];
-        string[] DeviceDataString2 = new string[13];
+        int[] DeviceData = new int[20];
+        int[] DeviceData2 = new int[20];
+        string[] DeviceDataString = new string[20];
+        string[] DeviceDataString2 = new string[20];
 
 
         public struct DeviceTemp
@@ -54,13 +54,17 @@ namespace ProjectCool_BETA_v1._0
 
         }
 
+        private void SerialWatchdogTimer_Tick(object sender, EventArgs e)
+        {
+            DeviceSerial.SerialWatchdog(); //Watchdog for RX/TX
+        }
+
         DeviceTemp systemps = new DeviceTemp();
         private void ProjectCool_Load(object sender, EventArgs e)
         {
             PortSelect.Items.AddRange(DeviceSerial.AvailablePorts);
             sysleds.CreateLed();
             sysfans.CreateFans();
-            GraphicsWatchdog.Start();
         }
 
         int MenuEnabled;
@@ -74,7 +78,8 @@ namespace ProjectCool_BETA_v1._0
         {
             Color reverse = new Color();
 
-            switch (mode) {
+            switch (mode)
+            {
                 case 0:
                     cntrl.BackColor = reference.BackColor;
                     cntrl.ForeColor = reference.ForeColor;
@@ -85,8 +90,8 @@ namespace ProjectCool_BETA_v1._0
                     cntrl.ForeColor = reverse;
                     break;
             }
-            
-            
+
+
         }
 
         private void RenderMenu(byte menu)
@@ -105,17 +110,17 @@ namespace ProjectCool_BETA_v1._0
                         break;
                     case 1:
                         RenderMenu(0);
-                        ChangeLocation(MainPanel, new Point(327, 12), new Size(873, 435));
+                        ChangeLocation(MainPanel, new Point(327, 12), new Size(870, 530));
                         ReverseColors(Monitoring, DevicePortLabel, 1);
                         break;
                     case 2:
                         RenderMenu(0);
-                        ChangeLocation(FanControl, new Point(327, 12), new Size(873, 435));
+                        ChangeLocation(FanControl, new Point(327, 12), new Size(870, 530));
                         ReverseColors(FanTweak, DevicePortLabel, 1);
                         break;
                     case 3:
                         RenderMenu(0);
-                        ChangeLocation(LEDcontrol, new Point(327, 12), new Size(873, 435));
+                        ChangeLocation(LEDcontrol, new Point(327, 12), new Size(870, 530));
                         ReverseColors(LedTweak, DevicePortLabel, 1);
                         break;
                 }
@@ -126,7 +131,6 @@ namespace ProjectCool_BETA_v1._0
             {
                 if (DeviceSerial.PortOpen())
                 {
-                    CommitChanges();
                     DevicePooling.Stop();
                 }
             }
@@ -140,22 +144,21 @@ namespace ProjectCool_BETA_v1._0
             }
         }
 
-        private void RenderChart(int maximum)
+        private void RenderChart(int value, int maximum, PictureBox chart)
         {
             Pen outline = new Pen(Color.FromArgb(255, 211, 98, 98));
             System.Drawing.SolidBrush bar = new SolidBrush(Color.FromArgb(255, 211, 132, 132));
-            Bitmap Chart = new Bitmap(FanSpeed.Width, FanSpeed.Height); ;
+            Bitmap Chart = new Bitmap(main_fan_speed_graph.Width, main_fan_speed_graph.Height); ;
             using (Graphics formGraphics = Graphics.FromImage(Chart))
             {
-                formGraphics.DrawRectangle(outline, new Rectangle(0, 0, FanSpeed.Width - 1, FanSpeed.Height - 1));
-                formGraphics.FillRectangle(bar, new Rectangle(4, 3, sysleds.map(maximum, 0, 100, 0, FanSpeed.Width - 3), FanSpeed.Height - 6));
+                formGraphics.DrawRectangle(outline, new Rectangle(0, 0, main_fan_speed_graph.Width - 1, main_fan_speed_graph.Height - 1));
+                formGraphics.FillRectangle(bar, new Rectangle(4, 3, sysleds.map(value, 0, maximum, 0, main_fan_speed_graph.Width - 3), main_fan_speed_graph.Height - 6));
                 outline.Dispose();
                 bar.Dispose();
 
                 formGraphics.Dispose();
             }
-            FanSpeed.Image = Chart;
-        ;
+            chart.Image = Chart;
         }
 
 
@@ -163,6 +166,7 @@ namespace ProjectCool_BETA_v1._0
         private void FanTweak_Click(object sender, EventArgs e)
         {
             RenderMenu(2);
+            CommitChanges(1);
         }
 
         private void Monitoring_Click(object sender, EventArgs e)
@@ -173,195 +177,241 @@ namespace ProjectCool_BETA_v1._0
         private void LedTweak_Click(object sender, EventArgs e)
         {
             RenderMenu(3);
+            CommitChanges(0);
         }
-        
+
         private void PortSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DeviceSerial.StopSerial();
             string result = DeviceSerial.CreateSerial(9600, PortSelect.Text);
             if (result != "OK")
             {
                 MessageBox.Show(result, "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                
             }
             else
             {
-                DeviceSerial.SendData("F");
-                while (true)
-                {
-                    Thread.Sleep(500);
-                    if (DeviceSerial.ReceiveData().Contains("PC1.0"))
-                    {
-                        UpdateSettings();
-                        DevicePooling.Start();
-                        break;
-                    }
-                    if(errors_count++ > 10)
-                    {
-                        MessageBox.Show("This hardware is not supported.\r\n Possible reasons:\r\n 1.This is ProjectCool, higher than ver 1.0 \r\n 2.Your device has firmware version 5.0 (Download ProjectCool NT to control it) \r\n 3.This is not ProjectCool device", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        DeviceSerial.StopSerial();
-                        break;
-                    }
-                }
-                    
+                DevicePooling.Start();
             }
         }
 
         byte errors_count = 0;
-
-            void UpdateStats()
+        void UpdateStats()
+        {
+            DeviceSerial.GetStats();
+            DeviceDataString = DeviceSerial.GetPacket().Split(';');
+            try
             {
-            DeviceSerial.SendData("S");
-            string data = "0";
-            if (DeviceSerial.IncomingData())
+                for (int i = 0; i < 4; i++) //Converting each character into 
+                {
+                    DeviceData[i] = Convert.ToInt32(DeviceDataString[i]);
+                }
+
+                systemps.T = DeviceData[0];
+                systemps.H = DeviceData[1];
+                sysfans.MainfanSpeed = DeviceData[2];
+                sysfans.SlavefanSpeed = DeviceData[3];
+                RenderChart(sysfans.MainfanSpeed, 2000, main_fan_speed_graph);
+                main_fan_speed.Text = sysfans.MainfanSpeed.ToString() + "RPM";
+                RenderChart(sysfans.SlavefanSpeed, 2000, sec_fan_speed_graph);
+                sec_fan_speed.Text = sysfans.SlavefanSpeed.ToString() + "RPM";
+                double systemps_t = systemps.T;
+                double systemps_h = systemps.H;
+                systemps_t = systemps_t / 10;
+                systemps_h = systemps_h / 10;
+                CaseTemp.Text = systemps_t.ToString();
+                CaseHumidity.Text = systemps_h.ToString();
+                Connection.Text = "Online";
+            }
+            catch (Exception EX)
             {
-                data = DeviceSerial.ReceiveData();
-                DeviceDataString = data.Split(';');
 
-                try
-                {
-                    for (int i = 0; i < 4; i++) //Converting each character into 
-                    {
-                        DeviceData[i] = Convert.ToInt32(DeviceDataString[i]);
-                    }
-
-                    systemps.T = DeviceData[0];
-                    systemps.H = DeviceData[1];
-                    sysfans.CurrentFanSpeed = DeviceData[3];
-
-                    RenderChart(sysfans.CurrentFanSpeed);
-                    double systemps_t = systemps.T;
-                    double systemps_h = systemps.H;
-                    systemps_t = systemps_t / 10;
-                    systemps_h = systemps_h / 10;
-                    CaseTemp.Text = systemps_t.ToString();
-                    CaseHumidity.Text = systemps_h.ToString();
-                }
-                catch (Exception EX)
-                {
-
-                    DeviceSerial.ResetBuffer();
-                    DeviceSerial.fail();
-                }
             }
         }
-
-        void UpdateSettings() {
-        DeviceSerial.SendData("P");
-            string data = "0";
-            if (DeviceSerial.IncomingData())
-            {
-                data = DeviceSerial.ReceiveData();
-                DeviceDataString2 = data.Split(';');
-                preferences_updated = false;
-                try
+        void UpdateLEDSettings()
+        {
+            DeviceSerial.GetLEDpacket();
+            string data;
+                data = DeviceSerial.GetPacket();
+                if (data.Contains("L"))
                 {
-                    for (int i = 0; i < 9; i++) //Converting each character into 
+                    DeviceDataString2 = data.Split(';');
+                    try
                     {
-                        DeviceData2[i] = Convert.ToInt32(DeviceDataString2[i]);
+                        for (int i = 0; i < 9; i++) //Converting each character into 
+                        {
+                            DeviceData2[i] = Convert.ToInt32(DeviceDataString2[i]);
+                        }
+                        sysleds.Mode = (byte)DeviceData2[0];
+                        sysleds.setBrightnessFromDevice(DeviceData2[1]);
+                        sysleds.Hue = DeviceData2[2];
+                        sysleds.Sat = DeviceData2[3];
+                        sysleds.ColorChangeSpeed = DeviceData2[4];
+                        sysleds.BreatheSpeed = DeviceData2[5];
+                        sysleds.VarBrMode = (byte)DeviceData2[6];
+                        sysleds.VarBrParam = (byte)DeviceData2[7];
+                        sysleds.FanLedMode = (byte)DeviceData2[8];
+                        Connection.Text = "Online";
+                        led_updated = true;
                     }
-
-                    sysfans.CurrentFanMode = DeviceData2[0];
-                    sysfans.Hysteresis = DeviceData2[1];
-                    sysfans.TargetFanSpeed = DeviceData2[2];
-                    sysleds.Mode = (byte)DeviceData2[3];
-                    sysleds.setBrightnessFromDevice(DeviceData2[4]);
-                    sysleds.Hue = DeviceData2[5];
-                    sysleds.Sat = DeviceData2[6];
-                    sysleds.ColorChangeSpeed = DeviceData2[7];
-                    sysleds.BreatheSpeed = DeviceData2[8];
-                    FanSpeed_manual_track.Value = sysfans.TargetFanSpeed;
-                    FansMode.SelectedIndex = sysfans.CurrentFanMode;
-                    TempHysteresis.Value = Convert.ToDecimal(sysfans.Hysteresis / 10);
-                    NewLedMode.SelectedIndex = sysleds.Mode;
-                    brightness_manual_track.Value = sysleds.Brightness;
-                    color_change_track.Value = sysleds.ColorChangeSpeed;
-                    Breathe_speed_track.Value = sysleds.BreatheSpeed;
-                    Light_color_track.Value = sysleds.Hue;
-                    Saturation_track.Value = sysleds.Sat;
-                    FanMode.Text = FansMode.Text;
-                    FanMode_2.Text = FanMode.Text;
-                    LedMode.Text = NewLedMode.Text;
-                    preferences_updated = true;
-                }
-                catch (Exception EX)
-                {
-
-                    DeviceSerial.ResetBuffer();
-                    DeviceSerial.fail();
-                }
+                    catch (Exception EX)
+                    {
+                        //Thread.Sleep(100);
+                        //UpdateLEDSettings();
+                    }
             }
-            else
-                UpdateSettings();
+            
+    }
+        void UpdateFANSettings()
+        {
+            DeviceSerial.GetFANpacket();
+            string data;
+                data = DeviceSerial.GetPacket();
+                if (data.Contains("F"))
+                {
+                    DeviceDataString2 = data.Split(';');
+                    try
+                    {
+                        for (int i = 0; i < 10; i++) //Converting each character into 
+                        {
+                            DeviceData2[i] = Convert.ToInt32(DeviceDataString2[i]);
+                        }
+
+                        sysfans.MainFanMode = DeviceData2[0];
+                        sysfans.Hysteresis = DeviceData2[1];
+                        sysfans.MainManualFanSpeed = DeviceData2[2];
+                        sysfans.SlaveFanMode = (byte)DeviceData2[3];
+                        sysfans.MainMinTemp = DeviceData2[4];
+                        sysfans.MainMaxTemp = DeviceData2[5];
+                        sysfans.SlaveMinTemp = DeviceData2[6];
+                        sysfans.SlaveMaxTemp = DeviceData2[7];
+                        sysfans.MainStartTemp = DeviceData2[8];
+                        sysfans.SlaveStartTemp = DeviceData2[9];
+                        Connection.Text = "Online";
+                        fan_updated = true;
+                    }
+                    catch (Exception EX)
+                    {
+
+                    }
+                }    
+        }
+
+        private void UpdateControls()
+        {
+            main_fan_override_manual_track.Value = sysfans.MainManualFanSpeed;
+            slave_fan_override_manual_track.Value = sysfans.SlaveManualFanSpeed;
+            main_fan_mode_list.SelectedIndex = sysfans.MainFanMode;
+            slave_fan_mode_list.SelectedIndex = sysfans.SlaveFanMode;
+            shared_hysteresis.Value = Convert.ToDecimal(sysfans.Hysteresis / 10);
+            main_fan_maxtemp.Value = Convert.ToDecimal(sysfans.MainMaxTemp / 10);
+            main_fan_mintemp.Value = Convert.ToDecimal(sysfans.MainMinTemp / 10);
+            main_fan_starttemp.Value = Convert.ToDecimal(sysfans.MainStartTemp / 10);
+            slave_fan_maxtemp.Value = Convert.ToDecimal(sysfans.SlaveMaxTemp / 10);
+            slave_fan_mintemp.Value = Convert.ToDecimal(sysfans.SlaveMinTemp / 10);
+            slave_fan_starttemp.Value = Convert.ToDecimal(sysfans.SlaveStartTemp / 10);
+
+            main_led_mode.SelectedIndex = sysleds.Mode;
+            brightness_manual_track.Value = sysleds.Brightness;
+            color_change_track.Value = sysleds.ColorChangeSpeed;
+            Breathe_speed_track.Value = sysleds.BreatheSpeed;
+            Light_color_track.Value = sysleds.Hue;
+            Saturation_track.Value = sysleds.Sat;
+            fan_led_mode.SelectedIndex = sysleds.FanLedMode;
+
+            main_fan_mode.Text = main_fan_mode_list.Text;
+            sec_fan_mode.Text = main_fan_mode.Text;
+            primary_led_mode.Text = main_led_mode.Text;
+            sec_led_mode.Text = fan_led_mode.Text;
+            LedTweak.Enabled = true;
+            FanTweak.Enabled = true;
+
         }
 
         bool preferences_updated = false;
+        bool fan_updated = false;
+        bool led_updated = false;
         private void DevicePooling_Tick(object sender, EventArgs e)
         {
                 DevicePooling.Interval = (int)poolingRate.Value;
-            if (preferences_updated)
+             if(preferences_updated)
             {
                 UpdateStats();
             }
-        }
-
-        int tick = 0;
-        private void GraphicsWatchdog_Tick(object sender, EventArgs e)
-        {
-            switch (DeviceSerial.GetStatus())
+             else
+                if (DeviceSerial.PortOpen() && !preferences_updated)
             {
-                case "DIS":
-                    Connection.Text = "NULL";
-                    ReverseColors(Connection, DevicePortLabel, 0);
-                    break;
-                case "CON":
-                    Connection.Text = "STABLE";
-                    ReverseColors(Connection, DevicePortLabel, 0);
-                    break;
-                case "TX":
-                    GraphicsWatchdog.Interval = 200;
-                    Connection.Text = "TRANSMIT";
-                    if(tick++%2==0)
-                    ReverseColors(Connection, DevicePortLabel, 1);
-                    else
-                        ReverseColors(Connection, DevicePortLabel, 0);
-                    break;
-                case "RX":
-                    GraphicsWatchdog.Interval = 500;
-                    Connection.Text = "RECEIVE";
-                    if (tick++ % 2 != 0)
-                        ReverseColors(Connection, DevicePortLabel, 1);
-                    else
-                        ReverseColors(Connection, DevicePortLabel, 0);
-                    break;
-                case "F":
-                    GraphicsWatchdog.Interval = 100;
-                    Connection.Text = "ERROR";
-                        ReverseColors(Connection, DevicePortLabel, 1);        
-                    break;
-
+                OpenAndConfigurePort();
             }
         }
 
-        void CommitChanges()
+        void OpenAndConfigurePort()
+        {
+                SerialWatchdogTimer.Start();
+
+                DeviceSerial.GetVersion();
+                DeviceSerial.SerialWatchdog();// Trigger watchdog manually
+                if (DeviceSerial.GetPacket().Contains("5.0"))
+                {
+                if (!fan_updated)
+                {
+                    UpdateFANSettings();
+                }
+                if (fan_updated)
+                {
+                    UpdateLEDSettings();
+                }
+                if (led_updated && fan_updated)
+                {
+                    UpdateControls();
+                    preferences_updated = true;
+                }
+                }
+                if (errors_count++ > 20)
+                {
+                    MessageBox.Show("This hardware is not supported.\r\n Possible reasons:\r\n 1.This is not ProjectCool 2.0 \r\n 2.Your device has firmware older than version 5.0 (Driver update) \r\n 3.This is not ProjectCool device", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    DeviceSerial.StopSerial();
+                }
+        }
+
+        void CommitChanges(byte packet_type)
         {
             DevicePooling.Stop();
-            DeviceSerial.SendData(CreateQueue());
-            DeviceSerial.ResetBuffer();            
-       }
-
-        string CreateQueue()
+          
+                DeviceSerial.SubmitPacket(CreateQueue(packet_type));
+        }
+ 
+        string CreateQueue(byte packet_type)
         {
-        sysfans.CurrentFanMode = FansMode.SelectedIndex;
-        sysfans.TargetFanSpeed = FanSpeed_manual_track.Value;
-        sysleds.Mode = (byte)NewLedMode.SelectedIndex;
-        sysleds.Brightness = brightness_manual_track.Value;
-        sysleds.Hue = Light_color_track.Value;
-        sysleds.Sat = Saturation_track.Value;
-        sysleds.ColorChangeSpeed = color_change_track.Value;
-        sysleds.BreatheSpeed = Breathe_speed_track.Value;
-        string queue = "";
-        queue = sysfans.CurrentFanMode + ";" + TempHysteresis.Value * 10 + ";" + sysfans.TargetFanSpeed + ";" + sysleds.Mode + ";" + sysleds.brightness255 + ";" + sysleds.Hue + ";" + sysleds.Sat + ";" + sysleds.ColorChangeSpeed + ";" + sysleds.BreatheSpeed + ";" + "0" + ";" + "0" + ";" + "E";
-        return queue;
+            string queue = "";
+            switch (packet_type)
+            {
+                case 0:
+                    sysleds.Mode = (byte)main_led_mode.SelectedIndex;
+                    sysleds.Brightness = brightness_manual_track.Value;
+                    sysleds.Hue = Light_color_track.Value;
+                    sysleds.Sat = Saturation_track.Value;
+                    sysleds.ColorChangeSpeed = color_change_track.Value;
+                    sysleds.BreatheSpeed = Breathe_speed_track.Value;
+                    sysleds.FanLedMode = (byte)fan_led_mode.SelectedIndex;
+                    queue = sysleds.Mode + ";" + sysleds.brightness255 + ";" + sysleds.Hue + ";" + sysleds.Sat + ";" + sysleds.ColorChangeSpeed + ";" + sysleds.BreatheSpeed + ";" + "0" + ";" + "0" + ";" + sysleds.FanLedMode + ";" + "L";
+                    return queue;
+                case 1:
+                    sysfans.MainFanMode = main_fan_mode_list.SelectedIndex;
+                    //hysteresis
+                    sysfans.MainManualFanSpeed = main_fan_override_manual_track.Value;
+                    sysfans.SlaveFanMode = slave_fan_mode_list.SelectedIndex;
+                    //manual_mintemp1 
+                    //manual_maxtemp1
+                    //manual_mintemp2 
+                    //manual_maxtemp2 
+                    //manual_starttemp1 
+                    //manual_starttemp2
+                    queue = sysfans.MainFanMode + ";" + shared_hysteresis.Value * 10 + ";" + sysfans.MainManualFanSpeed + ";" + ";" + sysfans.SlaveFanMode + ";" + main_fan_mintemp.Value * 10 + ";" + main_fan_maxtemp.Value * 10 + ";" + slave_fan_mintemp.Value * 10 + ";" + slave_fan_maxtemp.Value * 10 + ";" + main_fan_starttemp.Value * 10 + ";" + slave_fan_starttemp.Value * 10 + ";" + "F";
+                    return queue;
+                default:
+                    return null;
+
+            }     
         }
 
         private void MainPanel_Click(object sender, EventArgs e)
@@ -387,5 +437,12 @@ namespace ProjectCool_BETA_v1._0
                 RenderMenu(3);
             }
         }
+
+        private void LEDcontrol_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        
     }
 }
