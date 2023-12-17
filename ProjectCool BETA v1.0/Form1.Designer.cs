@@ -44,6 +44,8 @@ namespace ProjectCool_BETA_v1._0
             this.UpdateRateLabel = new System.Windows.Forms.Label();
             this.DevicePortLabel = new System.Windows.Forms.Label();
             this.FanControl = new System.Windows.Forms.Panel();
+            this.slave_fan_override_manual_track = new ProgressBar_test.EdgerunnersTrackbar();
+            this.main_fan_override_manual_track = new ProgressBar_test.EdgerunnersTrackbar();
             this.label39 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label38 = new System.Windows.Forms.Label();
@@ -106,6 +108,11 @@ namespace ProjectCool_BETA_v1._0
             this.main_led_mode = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.LEDcontrol = new System.Windows.Forms.Panel();
+            this.Breathe_speed_track = new ProgressBar_test.EdgerunnersTrackbar();
+            this.color_change_track = new ProgressBar_test.EdgerunnersTrackbar();
+            this.Saturation_track = new ProgressBar_test.EdgerunnersTrackbar();
+            this.Light_color_track = new ProgressBar_test.EdgerunnersTrackbar();
+            this.brightness_manual_track = new ProgressBar_test.EdgerunnersTrackbar();
             this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -123,16 +130,11 @@ namespace ProjectCool_BETA_v1._0
             this.label41 = new System.Windows.Forms.Label();
             this.fan_led_mode = new System.Windows.Forms.ComboBox();
             this.SerialWatchdogTimer = new System.Windows.Forms.Timer(this.components);
-            this.Breathe_speed_track = new ProgressBar_test.EdgerunnersTrackbar();
-            this.color_change_track = new ProgressBar_test.EdgerunnersTrackbar();
-            this.Saturation_track = new ProgressBar_test.EdgerunnersTrackbar();
-            this.Light_color_track = new ProgressBar_test.EdgerunnersTrackbar();
-            this.brightness_manual_track = new ProgressBar_test.EdgerunnersTrackbar();
-            this.slave_fan_override_manual_track = new ProgressBar_test.EdgerunnersTrackbar();
-            this.main_fan_override_manual_track = new ProgressBar_test.EdgerunnersTrackbar();
             this.MainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.poolingRate)).BeginInit();
             this.FanControl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.slave_fan_override_manual_track)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.main_fan_override_manual_track)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.slave_fan_starttemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.slave_fan_maxtemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.main_fan_starttemp)).BeginInit();
@@ -144,15 +146,13 @@ namespace ProjectCool_BETA_v1._0
             ((System.ComponentModel.ISupportInitialize)(this.sec_fan_speed_graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.main_fan_speed_graph)).BeginInit();
             this.LEDcontrol.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Breathe_speed_track)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.color_change_track)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Saturation_track)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Light_color_track)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.brightness_manual_track)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.slave_fan_override_manual_track)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.main_fan_override_manual_track)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // DevicePooling
@@ -212,7 +212,7 @@ namespace ProjectCool_BETA_v1._0
             this.Monitoring.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Monitoring.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.Monitoring.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Monitoring.Location = new System.Drawing.Point(24, 251);
+            this.Monitoring.Location = new System.Drawing.Point(23, 251);
             this.Monitoring.Name = "Monitoring";
             this.Monitoring.Size = new System.Drawing.Size(259, 37);
             this.Monitoring.TabIndex = 3;
@@ -357,6 +357,34 @@ namespace ProjectCool_BETA_v1._0
             this.FanControl.Size = new System.Drawing.Size(86, 14);
             this.FanControl.TabIndex = 0;
             this.FanControl.Click += new System.EventHandler(this.FanControl_Click);
+            // 
+            // slave_fan_override_manual_track
+            // 
+            this.slave_fan_override_manual_track.BackColor = System.Drawing.Color.Transparent;
+            this.slave_fan_override_manual_track.Image = ((System.Drawing.Image)(resources.GetObject("slave_fan_override_manual_track.Image")));
+            this.slave_fan_override_manual_track.Iterator = 5;
+            this.slave_fan_override_manual_track.Location = new System.Drawing.Point(16, 350);
+            this.slave_fan_override_manual_track.Maximum = 100;
+            this.slave_fan_override_manual_track.Minimum = 0;
+            this.slave_fan_override_manual_track.Name = "slave_fan_override_manual_track";
+            this.slave_fan_override_manual_track.Size = new System.Drawing.Size(732, 17);
+            this.slave_fan_override_manual_track.TabIndex = 3;
+            this.slave_fan_override_manual_track.TabStop = false;
+            this.slave_fan_override_manual_track.Value = 0;
+            // 
+            // main_fan_override_manual_track
+            // 
+            this.main_fan_override_manual_track.BackColor = System.Drawing.Color.Transparent;
+            this.main_fan_override_manual_track.Image = ((System.Drawing.Image)(resources.GetObject("main_fan_override_manual_track.Image")));
+            this.main_fan_override_manual_track.Iterator = 5;
+            this.main_fan_override_manual_track.Location = new System.Drawing.Point(15, 143);
+            this.main_fan_override_manual_track.Maximum = 100;
+            this.main_fan_override_manual_track.Minimum = 0;
+            this.main_fan_override_manual_track.Name = "main_fan_override_manual_track";
+            this.main_fan_override_manual_track.Size = new System.Drawing.Size(732, 17);
+            this.main_fan_override_manual_track.TabIndex = 3;
+            this.main_fan_override_manual_track.TabStop = false;
+            this.main_fan_override_manual_track.Value = 0;
             // 
             // label39
             // 
@@ -1178,6 +1206,76 @@ namespace ProjectCool_BETA_v1._0
             this.LEDcontrol.Click += new System.EventHandler(this.LEDcontrol_Click);
             this.LEDcontrol.Paint += new System.Windows.Forms.PaintEventHandler(this.LEDcontrol_Paint);
             // 
+            // Breathe_speed_track
+            // 
+            this.Breathe_speed_track.BackColor = System.Drawing.Color.Transparent;
+            this.Breathe_speed_track.Image = ((System.Drawing.Image)(resources.GetObject("Breathe_speed_track.Image")));
+            this.Breathe_speed_track.Iterator = 5;
+            this.Breathe_speed_track.Location = new System.Drawing.Point(203, 386);
+            this.Breathe_speed_track.Maximum = 100;
+            this.Breathe_speed_track.Minimum = 0;
+            this.Breathe_speed_track.Name = "Breathe_speed_track";
+            this.Breathe_speed_track.Size = new System.Drawing.Size(591, 16);
+            this.Breathe_speed_track.TabIndex = 4;
+            this.Breathe_speed_track.TabStop = false;
+            this.Breathe_speed_track.Value = 0;
+            // 
+            // color_change_track
+            // 
+            this.color_change_track.BackColor = System.Drawing.Color.Transparent;
+            this.color_change_track.Image = ((System.Drawing.Image)(resources.GetObject("color_change_track.Image")));
+            this.color_change_track.Iterator = 5;
+            this.color_change_track.Location = new System.Drawing.Point(203, 344);
+            this.color_change_track.Maximum = 100;
+            this.color_change_track.Minimum = 0;
+            this.color_change_track.Name = "color_change_track";
+            this.color_change_track.Size = new System.Drawing.Size(591, 16);
+            this.color_change_track.TabIndex = 4;
+            this.color_change_track.TabStop = false;
+            this.color_change_track.Value = 0;
+            // 
+            // Saturation_track
+            // 
+            this.Saturation_track.BackColor = System.Drawing.Color.Transparent;
+            this.Saturation_track.Image = ((System.Drawing.Image)(resources.GetObject("Saturation_track.Image")));
+            this.Saturation_track.Iterator = 5;
+            this.Saturation_track.Location = new System.Drawing.Point(203, 290);
+            this.Saturation_track.Maximum = 255;
+            this.Saturation_track.Minimum = 0;
+            this.Saturation_track.Name = "Saturation_track";
+            this.Saturation_track.Size = new System.Drawing.Size(591, 16);
+            this.Saturation_track.TabIndex = 4;
+            this.Saturation_track.TabStop = false;
+            this.Saturation_track.Value = 0;
+            // 
+            // Light_color_track
+            // 
+            this.Light_color_track.BackColor = System.Drawing.Color.Transparent;
+            this.Light_color_track.Image = ((System.Drawing.Image)(resources.GetObject("Light_color_track.Image")));
+            this.Light_color_track.Iterator = 5;
+            this.Light_color_track.Location = new System.Drawing.Point(203, 239);
+            this.Light_color_track.Maximum = 255;
+            this.Light_color_track.Minimum = 0;
+            this.Light_color_track.Name = "Light_color_track";
+            this.Light_color_track.Size = new System.Drawing.Size(591, 16);
+            this.Light_color_track.TabIndex = 4;
+            this.Light_color_track.TabStop = false;
+            this.Light_color_track.Value = 0;
+            // 
+            // brightness_manual_track
+            // 
+            this.brightness_manual_track.BackColor = System.Drawing.Color.Transparent;
+            this.brightness_manual_track.Image = ((System.Drawing.Image)(resources.GetObject("brightness_manual_track.Image")));
+            this.brightness_manual_track.Iterator = 5;
+            this.brightness_manual_track.Location = new System.Drawing.Point(203, 201);
+            this.brightness_manual_track.Maximum = 100;
+            this.brightness_manual_track.Minimum = 0;
+            this.brightness_manual_track.Name = "brightness_manual_track";
+            this.brightness_manual_track.Size = new System.Drawing.Size(591, 16);
+            this.brightness_manual_track.TabIndex = 4;
+            this.brightness_manual_track.TabStop = false;
+            this.brightness_manual_track.Value = 0;
+            // 
             // label16
             // 
             this.label16.AutoSize = true;
@@ -1364,104 +1462,6 @@ namespace ProjectCool_BETA_v1._0
             this.SerialWatchdogTimer.Interval = 10;
             this.SerialWatchdogTimer.Tick += new System.EventHandler(this.SerialWatchdogTimer_Tick);
             // 
-            // Breathe_speed_track
-            // 
-            this.Breathe_speed_track.BackColor = System.Drawing.Color.Transparent;
-            this.Breathe_speed_track.Image = ((System.Drawing.Image)(resources.GetObject("Breathe_speed_track.Image")));
-            this.Breathe_speed_track.Iterator = 5;
-            this.Breathe_speed_track.Location = new System.Drawing.Point(203, 386);
-            this.Breathe_speed_track.Maximum = 100;
-            this.Breathe_speed_track.Minimum = 0;
-            this.Breathe_speed_track.Name = "Breathe_speed_track";
-            this.Breathe_speed_track.Size = new System.Drawing.Size(591, 16);
-            this.Breathe_speed_track.TabIndex = 4;
-            this.Breathe_speed_track.TabStop = false;
-            this.Breathe_speed_track.Value = 0;
-            // 
-            // color_change_track
-            // 
-            this.color_change_track.BackColor = System.Drawing.Color.Transparent;
-            this.color_change_track.Image = ((System.Drawing.Image)(resources.GetObject("color_change_track.Image")));
-            this.color_change_track.Iterator = 5;
-            this.color_change_track.Location = new System.Drawing.Point(203, 344);
-            this.color_change_track.Maximum = 100;
-            this.color_change_track.Minimum = 0;
-            this.color_change_track.Name = "color_change_track";
-            this.color_change_track.Size = new System.Drawing.Size(591, 16);
-            this.color_change_track.TabIndex = 4;
-            this.color_change_track.TabStop = false;
-            this.color_change_track.Value = 0;
-            // 
-            // Saturation_track
-            // 
-            this.Saturation_track.BackColor = System.Drawing.Color.Transparent;
-            this.Saturation_track.Image = ((System.Drawing.Image)(resources.GetObject("Saturation_track.Image")));
-            this.Saturation_track.Iterator = 5;
-            this.Saturation_track.Location = new System.Drawing.Point(203, 290);
-            this.Saturation_track.Maximum = 255;
-            this.Saturation_track.Minimum = 0;
-            this.Saturation_track.Name = "Saturation_track";
-            this.Saturation_track.Size = new System.Drawing.Size(591, 16);
-            this.Saturation_track.TabIndex = 4;
-            this.Saturation_track.TabStop = false;
-            this.Saturation_track.Value = 0;
-            // 
-            // Light_color_track
-            // 
-            this.Light_color_track.BackColor = System.Drawing.Color.Transparent;
-            this.Light_color_track.Image = ((System.Drawing.Image)(resources.GetObject("Light_color_track.Image")));
-            this.Light_color_track.Iterator = 5;
-            this.Light_color_track.Location = new System.Drawing.Point(203, 239);
-            this.Light_color_track.Maximum = 255;
-            this.Light_color_track.Minimum = 0;
-            this.Light_color_track.Name = "Light_color_track";
-            this.Light_color_track.Size = new System.Drawing.Size(591, 16);
-            this.Light_color_track.TabIndex = 4;
-            this.Light_color_track.TabStop = false;
-            this.Light_color_track.Value = 0;
-            // 
-            // brightness_manual_track
-            // 
-            this.brightness_manual_track.BackColor = System.Drawing.Color.Transparent;
-            this.brightness_manual_track.Image = ((System.Drawing.Image)(resources.GetObject("brightness_manual_track.Image")));
-            this.brightness_manual_track.Iterator = 5;
-            this.brightness_manual_track.Location = new System.Drawing.Point(203, 201);
-            this.brightness_manual_track.Maximum = 100;
-            this.brightness_manual_track.Minimum = 0;
-            this.brightness_manual_track.Name = "brightness_manual_track";
-            this.brightness_manual_track.Size = new System.Drawing.Size(591, 16);
-            this.brightness_manual_track.TabIndex = 4;
-            this.brightness_manual_track.TabStop = false;
-            this.brightness_manual_track.Value = 0;
-            // 
-            // slave_fan_override_manual_track
-            // 
-            this.slave_fan_override_manual_track.BackColor = System.Drawing.Color.Transparent;
-            this.slave_fan_override_manual_track.Image = ((System.Drawing.Image)(resources.GetObject("slave_fan_override_manual_track.Image")));
-            this.slave_fan_override_manual_track.Iterator = 5;
-            this.slave_fan_override_manual_track.Location = new System.Drawing.Point(16, 350);
-            this.slave_fan_override_manual_track.Maximum = 100;
-            this.slave_fan_override_manual_track.Minimum = 0;
-            this.slave_fan_override_manual_track.Name = "slave_fan_override_manual_track";
-            this.slave_fan_override_manual_track.Size = new System.Drawing.Size(732, 17);
-            this.slave_fan_override_manual_track.TabIndex = 3;
-            this.slave_fan_override_manual_track.TabStop = false;
-            this.slave_fan_override_manual_track.Value = 0;
-            // 
-            // main_fan_override_manual_track
-            // 
-            this.main_fan_override_manual_track.BackColor = System.Drawing.Color.Transparent;
-            this.main_fan_override_manual_track.Image = ((System.Drawing.Image)(resources.GetObject("main_fan_override_manual_track.Image")));
-            this.main_fan_override_manual_track.Iterator = 5;
-            this.main_fan_override_manual_track.Location = new System.Drawing.Point(15, 143);
-            this.main_fan_override_manual_track.Maximum = 100;
-            this.main_fan_override_manual_track.Minimum = 0;
-            this.main_fan_override_manual_track.Name = "main_fan_override_manual_track";
-            this.main_fan_override_manual_track.Size = new System.Drawing.Size(732, 17);
-            this.main_fan_override_manual_track.TabIndex = 3;
-            this.main_fan_override_manual_track.TabStop = false;
-            this.main_fan_override_manual_track.Value = 0;
-            // 
             // ProjectCool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -1487,6 +1487,8 @@ namespace ProjectCool_BETA_v1._0
             ((System.ComponentModel.ISupportInitialize)(this.poolingRate)).EndInit();
             this.FanControl.ResumeLayout(false);
             this.FanControl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.slave_fan_override_manual_track)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.main_fan_override_manual_track)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.slave_fan_starttemp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.slave_fan_maxtemp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.main_fan_starttemp)).EndInit();
@@ -1500,15 +1502,13 @@ namespace ProjectCool_BETA_v1._0
             ((System.ComponentModel.ISupportInitialize)(this.main_fan_speed_graph)).EndInit();
             this.LEDcontrol.ResumeLayout(false);
             this.LEDcontrol.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Breathe_speed_track)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.color_change_track)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Saturation_track)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Light_color_track)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.brightness_manual_track)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.slave_fan_override_manual_track)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.main_fan_override_manual_track)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
